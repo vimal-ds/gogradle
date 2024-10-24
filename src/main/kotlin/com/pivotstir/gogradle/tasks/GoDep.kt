@@ -113,9 +113,9 @@ class GoDep : AbstractGoTask<GoDepConfig>(GoDepConfig::class) {
             run {
                 // install by go get
                 val cmds = mutableListOf(
-                        "github.com/wadey/gocovmerge",
-                        "github.com/axw/gocov/gocov",
-                        "github.com/AlekSi/gocov-xml"
+                        "github.com/wadey/gocovmerge@latest",
+                        "github.com/axw/gocov/gocov@v1.1.0",
+                        "github.com/AlekSi/gocov-xml@v1.1.0"
                 )
 
                 if (!nonTestLibsIgnored) {
@@ -133,12 +133,12 @@ class GoDep : AbstractGoTask<GoDepConfig>(GoDepConfig::class) {
                     logger.lifecycle("Starting to install $it to \$GOPATH/bin or \$GOBIN")
                 }
 
-                ("go get -u".tokens() + cmds).joinToString(" ").let {
+                ("go get -d".tokens() + cmds).joinToString(" ").let {
                     logger.lifecycle("Installing Go module dependencies. Cmd: $it")
 
                     exec(it) { spec ->
                         spec.environment.putAll(goEnvs(spec.environment))
-                        spec.environment["GO111MODULE"] = "off"
+                        spec.environment["GO111MODULE"] = "on"
                     }
                 }
             }
@@ -169,7 +169,7 @@ class GoDep : AbstractGoTask<GoDepConfig>(GoDepConfig::class) {
                             spec.workingDir(swaggoDir)
 
                             spec.environment.putAll(goEnvs(spec.environment))
-                            spec.environment["GO111MODULE"] = "off"
+                            spec.environment["GO111MODULE"] = "on"
                         }
                     }
                 }
